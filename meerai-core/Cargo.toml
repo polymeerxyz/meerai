@@ -1,0 +1,37 @@
+[package]
+name = "meerai-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+
+[lib]
+name = "meerai_core"
+path = "src/lib.rs"
+doctest = false
+
+[features]
+worker = []
+
+[dependencies]
+anyhow = "1"
+async-openai = "0.28"
+async-trait = "0.1"
+derive_builder = "0.20"
+futures = "0.3"
+reqwest = { version = "0.12", default-features = false, features = [
+  "json",
+  "stream",
+  "multipart",
+] }
+schemars = "0.8.22"
+secrecy = "0.10"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tracing = { version = "0.1", features = ["attributes"] }
+tracing-glog = "0.4"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[dev-dependencies]
+serde_path_to_error = "0.1"

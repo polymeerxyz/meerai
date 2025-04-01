@@ -1,0 +1,15 @@
+[package]
+name = "meerai-common"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+
+[dependencies]
+meerai-core = { path = "../meerai-core/" }
+meerai-macros = { path = "../meerai-macros/" }
+
+anyhow = "1"
+async-trait = "0.1"
+serde = "1"
+serde_json = "1"

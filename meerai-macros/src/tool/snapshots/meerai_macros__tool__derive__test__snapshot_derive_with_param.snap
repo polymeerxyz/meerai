@@ -1,0 +1,53 @@
+---
+source: meerai-macros/src/tool/derive.rs
+expression: "crate::test_utils::pretty_macro_output(&output)"
+snapshot_kind: text
+---
+use meerai_core::{ToolDefinition, ToolError, ToolOutput, Toolset};
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+pub struct HelloArgs {
+    pub arg1: String,
+}
+impl std::fmt::Display for HelloArgs {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", serde_json::to_string(self).unwrap())
+    }
+}
+#[async_trait::async_trait]
+trait Invoke {
+    async fn hello(&self, args: &HelloArgs) -> Result<ToolOutput, ToolError>;
+}
+#[async_trait::async_trait]
+impl Toolset for HelloDerive
+where
+    Self: Invoke,
+{
+    fn name(&self) -> String {
+        "hello_derive".to_string()
+    }
+    fn definition(&self) -> Vec<ToolDefinition> {
+        vec!(
+            ToolDefinition { r#type : "function".to_string(), name : "hello_derive-hello"
+            .to_string(), description : "Hello world".to_string(), parameters :
+            serde_json::json!({ "type" : "object", "properties" : { "arg1" : { "type" :
+            "string", "description" : "" } } }), }
+        )
+    }
+    fn contain(&self, fn_name: &str) -> bool {
+        match fn_name {
+            "hello_derive-hello" => true,
+            _ => false,
+        }
+    }
+    async fn invoke(&self, fn_name: &str, args: &str) -> Result<ToolOutput, ToolError> {
+        match fn_name {
+            "hello_derive-hello" => {
+                let args: HelloArgs = serde_json::from_str(args)
+                    .map_err(|e| ToolError::WrongArguments(e))?;
+                let result = self.hello(&args).await?;
+                Ok(result)
+            }
+            _ => Err(ToolError::InvalidFunctionName(fn_name.to_string())),
+        }
+    }
+}

@@ -1,0 +1,18 @@
+[workspace]
+members = [
+  "meerai",
+  "meerai-common",
+  "meerai-core",
+  "meerai-macros",
+  "meerai-swarm",
+]
+default-members = ["meerai", "meerai-*"]
+resolver = "2"
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+authors = ["Polymeer Core Dev <dev@polymeer.xyz>"]
+description = "Polymeer's Bot"
+
+[workspace.dependencies]

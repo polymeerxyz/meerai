@@ -1,0 +1,19 @@
+[workspace]
+members = ["meerai-*"]
+resolver = "2"
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+authors = ["Polymeer Core Dev <dev@polymeer.xyz>"]
+description = "Polymeer's AI agents"
+
+[workspace.dependencies]
+anyhow = "1"
+async-trait = "0.1"
+derive_builder = "0.20"
+regex = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+thiserror = "2"

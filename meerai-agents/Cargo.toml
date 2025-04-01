@@ -1,0 +1,17 @@
+[package]
+name = "meerai-agents"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+
+[dependencies]
+meerai-core = { path = "../meerai-core/" }
+meerai-macros = { path = "../meerai-macros/" }
+
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+futures-test = "0.3"

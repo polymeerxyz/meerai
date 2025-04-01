@@ -1,0 +1,49 @@
+---
+source: meerai-macros/src/tool/derive_toolset.rs
+expression: "crate::test_utils::pretty_macro_output(&output)"
+snapshot_kind: text
+---
+#[meerai_core::async_trait]
+trait HelloDeriveInvoke {
+    async fn hello(
+        &self,
+        args: &HelloArgs,
+    ) -> Result<meerai_core::ToolOutput, meerai_core::ToolError>;
+}
+#[meerai_core::async_trait]
+impl meerai_core::Toolset for HelloDerive
+where
+    Self: HelloDeriveInvoke,
+{
+    fn name(&self) -> String {
+        "hello_derive".to_string()
+    }
+    fn definition(&self) -> Vec<meerai_core::ToolDefinition> {
+        vec![
+            meerai_core::ToolDefinition { r#type : "function".to_string(), name :
+            "hello_derive-hello".to_string(), description : "Hello".to_string(),
+            parameters : HelloParams::json_schema(), }
+        ]
+    }
+    fn contain(&self, fn_name: &str) -> bool {
+        match fn_name {
+            "hello_derive-hello" => true,
+            _ => false,
+        }
+    }
+    async fn invoke(
+        &self,
+        fn_name: &str,
+        args: &str,
+    ) -> Result<meerai_core::ToolOutput, meerai_core::ToolError> {
+        match fn_name {
+            "hello_derive-hello" => {
+                let args: HelloArgs = serde_json::from_str(args)
+                    .map_err(|e| meerai_core::ToolError::WrongArguments(e))?;
+                let result = self.hello(&args).await?;
+                Ok(result)
+            }
+            _ => Err(meerai_core::ToolError::InvalidFunctionName(fn_name.to_string())),
+        }
+    }
+}

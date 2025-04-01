@@ -1,0 +1,27 @@
+[package]
+name = "meerai-macros"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+
+[lib]
+name = "meerai_macros"
+proc-macro = true
+
+[dependencies]
+meerai-core = { path = "../meerai-core/" }
+
+anyhow = { workspace = true }
+convert_case = "0.8"
+darling = "0.20"
+prettyplease = "0.2"
+proc-macro2 = "1.0"
+quote = "1.0"
+serde = { workspace = true }
+serde_json = { workspace = true }
+syn = "2.0"
+
+[dev-dependencies]
+futures-test = "0.3"
+insta = "1.42"

@@ -1,0 +1,31 @@
+[package]
+name = "meerai-swarm"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+
+[dependencies]
+meerai-agents = { path = "../meerai-agents" }
+meerai-common = { path = "../meerai-common" }
+meerai-core = { path = "../meerai-core" }
+meerai-macros = { path = "../meerai-macros" }
+
+agent-twitter-client = "0.1"
+anyhow = { workspace = true }
+atrium-api = "0.25.0"
+bsky-sdk = "0.1.16"
+chrono = "0.4"
+clap = { version = "4", features = ["derive"] }
+derive_builder = "0.20"
+dotenv = "0.15"
+futures = "0.3"
+ractor = { version = "0.15", features = ["async-trait"] }
+reqwest = "0.12"
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "tracing"] }
+tracing = "0.1"
+tracing-glog = "0.4"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

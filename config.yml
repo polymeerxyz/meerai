@@ -1,0 +1,6 @@
+x:
+  cookie: ${X_COOKIE}
+
+bluesky:
+  identifier: ${BSKY_IDENTIFIER}
+  password: ${BSKY_PASSWORD}

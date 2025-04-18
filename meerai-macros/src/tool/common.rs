@@ -48,11 +48,4 @@ impl ToolArgs {
     pub fn get_fn_name(&self) -> String {
         self.name.to_case(Case::Snake)
     }
-
-    pub fn args_struct_ident(&self) -> syn::Ident {
-        syn::Ident::new(
-            &format!("{}Args", &self.get_fn_name().to_case(Case::Pascal)),
-            proc_macro2::Span::call_site(),
-        )
-    }
 }

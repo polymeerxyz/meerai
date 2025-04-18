@@ -16,6 +16,12 @@ where
         "hello_derive".to_string()
     }
     fn definition(&self) -> Vec<meerai_core::ToolDefinition> {
+        let generator = &mut schemars::SchemaGenerator::new(
+            schemars::generate::SchemaSettings::default()
+                .with(|s| {
+                    s.meta_schema = None;
+                }),
+        );
         vec![
             meerai_core::ToolDefinition { r#type : "function".to_string(), name :
             "hello_derive-hello".to_string(), description : "Hello".to_string(),

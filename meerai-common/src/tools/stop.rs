@@ -1,12 +1,13 @@
 use anyhow::Result;
-use meerai_macros::{Schema, tool};
+use meerai_core::JsonSchema;
+use meerai_macros::tool;
 
 #[tool(name = "Stop", description = "Stop the agent.")]
 async fn stop() -> Result<meerai_core::ToolOutput, meerai_core::ToolError> {
     Ok(meerai_core::ToolOutput::Stop("".to_string()))
 }
 
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize, Schema)]
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize, JsonSchema)]
 pub struct StopWithReasonArgs {
     pub reason: String,
 }

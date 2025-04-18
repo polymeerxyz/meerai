@@ -1,8 +1,8 @@
 use anyhow::Result;
 use meerai_core::JsonSchema;
-use meerai_macros::{Schema, tool};
+use meerai_macros::tool;
 
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize, Schema)]
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize, JsonSchema)]
 pub struct StopWithReasonArgs {
     pub reason: String,
 }

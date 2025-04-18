@@ -1,9 +1,9 @@
 use agent_twitter_client::scraper::Scraper;
 use anyhow::{Error, Result};
 use meerai_core::{JsonSchema, ToolError, ToolOutput, async_trait};
-use meerai_macros::{Schema, Toolset};
+use meerai_macros::Toolset;
 
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize, Schema)]
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize, JsonSchema)]
 pub struct ReadTweetArgs {
     pub url: String,
 }

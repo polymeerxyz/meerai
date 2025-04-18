@@ -1,5 +1,5 @@
-use std::pin::Pin;
 use std::time::Duration;
+use std::{pin::Pin, vec};
 
 use anyhow::{Result, anyhow};
 use meerai_core::{
@@ -65,7 +65,7 @@ impl MultiTurnAgent {
     ) -> Self {
         Self {
             chat_completion: Box::pin(chat_completion),
-            chat_history: Vec::new(),
+            chat_history: vec![],
             tools,
             system_prompt,
             config: MultiTurnAgentConfig::default(),
@@ -81,7 +81,7 @@ impl MultiTurnAgent {
     ) -> Self {
         Self {
             chat_completion: Box::pin(chat_completion),
-            chat_history: Vec::new(),
+            chat_history: vec![],
             tools,
             system_prompt,
             config,
@@ -98,7 +98,7 @@ impl MultiTurnAgent {
         chat_completion: impl ChatCompletion + 'static,
         system_prompt: String,
     ) -> Self {
-        Self::new(chat_completion, Vec::new(), system_prompt)
+        Self::new(chat_completion, vec![], system_prompt)
     }
 
     /// Adds a single tool to the agent.

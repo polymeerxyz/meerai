@@ -1,6 +1,6 @@
 use meerai_core::{JsonSchema, Toolset};
 
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, meerai_macros::Schema)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, JsonSchema)]
 pub struct GetWeatherArgs {
     location: String,
     unit: Option<String>,

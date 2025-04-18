@@ -7,7 +7,7 @@ pub fn schema_derive_impl(input: &DeriveInput) -> syn::Result<proc_macro2::Token
         Data::Struct(data) => match &data.fields {
             Fields::Named(fields) => generate_field_schemas(&fields.named),
             Fields::Unnamed(_) => panic!("Tuple structs are not supported"),
-            Fields::Unit => Vec::new(),
+            Fields::Unit => vec![],
         },
         Data::Enum(_) => {
             // Handle enums separately
@@ -74,5 +74,33 @@ fn generate_field_schema(field: &Field) -> proc_macro2::TokenStream {
             stringify!(#field_name).to_string(),
             <#field_type as meerai_core::JsonSchema>::json_schema()
         );
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use syn::parse_quote;
+
+    use super::*;
+
+    #[test]
+    fn test_schema_derive() {
+        let input: DeriveInput = parse_quote! {
+            #[derive(Debug, serde::Serialize, serde::Deserialize)]
+            struct Human {
+                name: String,
+                age: u32,
+                gender: Option<String>,
+                birth_date: Option<String>,
+                address: Option<String>,
+                phone_number: Option<String>,
+                email: Option<String>,
+                occupation: Option<String>,
+            }
+        };
+
+        let output = schema_derive_impl(&input).unwrap();
+
+        insta::assert_snapshot!(crate::test_utils::pretty_macro_output(&output));
     }
 }

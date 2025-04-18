@@ -51,14 +51,14 @@ fn build_toolset_trait(
         .iter()
         .map(|tool| {
             let fn_ident = syn::Ident::new(&tool.get_fn_name(), proc_macro2::Span::call_site());
-            if tool.params.is_none() {
-                quote! {
-                    async fn #fn_ident(&self) -> Result<meerai_core::ToolOutput, meerai_core::ToolError>;
-                }
-            } else {
-                let args_struct_ident = tool.args_struct_ident();
+            if let Some(params) = &tool.params  {
+                let args_struct_ident = params.get_ident().unwrap();
                 quote! {
                     async fn #fn_ident(&self, args: &#args_struct_ident) -> Result<meerai_core::ToolOutput, meerai_core::ToolError>;
+                }
+            } else {
+                quote! {
+                    async fn #fn_ident(&self) -> Result<meerai_core::ToolOutput, meerai_core::ToolError>;
                 }
             }
         })
@@ -80,27 +80,29 @@ fn build_definition_fn(derived: &ToolsetDerive) -> proc_macro2::TokenStream {
         .map(|tool| {
             let fn_name = build_fn_name(&derived.toolset.name, &tool.get_fn_name());
             let description = &tool.description;
-            let parameters = if let Some(params) = &tool.params {
-                let params_ident = params.get_ident().unwrap();
+
+            if let Some(params) = &tool.params {
+                let args_struct_ident = params.get_ident().unwrap();
+
                 quote! {
-                    #params_ident::json_schema()
+                    meerai_core::ToolDefinition {
+                        r#type: "function".to_string(),
+                        name: #fn_name.to_string(),
+                        description: #description.to_string(),
+                        parameters: #args_struct_ident::json_schema(generator).into(),
+                    }
                 }
             } else {
                 quote! {
-                    serde_json::json!({
-                        "type": "object",
-                        "properties": {
-                        }
-                    })
-                }
-            };
-
-            quote! {
-                meerai_core::ToolDefinition {
-                    r#type: "function".to_string(),
-                    name: #fn_name.to_string(),
-                    description: #description.to_string(),
-                    parameters: #parameters,
+                    meerai_core::ToolDefinition {
+                        r#type: "function".to_string(),
+                        name: #fn_name.to_string(),
+                        description: #description.to_string(),
+                        parameters: serde_json::json!({
+                            "type": "object",
+                            "properties": {}
+                        }),
+                    }
                 }
             }
         })
@@ -108,6 +110,12 @@ fn build_definition_fn(derived: &ToolsetDerive) -> proc_macro2::TokenStream {
 
     quote! {
         fn definition(&self) -> Vec<meerai_core::ToolDefinition> {
+            let generator = &mut schemars::SchemaGenerator::new(
+                schemars::generate::SchemaSettings::default().with(|s| {
+                    s.meta_schema = None;
+                }),
+            );
+
             vec![#(#definitions),*]
         }
     }
@@ -135,20 +143,20 @@ fn build_invoke_fn(derived: &ToolsetDerive) -> proc_macro2::TokenStream {
     let invoke_matches = derived.toolset.tools.iter().map(|tool| {
         let fn_name = build_fn_name(&derived.toolset.name, &tool.get_fn_name());
         let fn_ident = syn::Ident::new(&tool.get_fn_name(), proc_macro2::Span::call_site());
-        let args_struct_ident = tool.args_struct_ident();
 
-        if tool.params.is_none() {
+        if let Some(params) = &tool.params {
+            let args_struct_ident = params.get_ident().unwrap();
             quote! {
                 #fn_name => {
-                    let result = self.#fn_ident().await?;
+                    let args: #args_struct_ident = serde_json::from_str(args).map_err(|e| meerai_core::ToolError::WrongArguments(e))?;
+                    let result = self.#fn_ident(&args).await?;
                     Ok(result)
                 }
             }
         } else {
             quote! {
                 #fn_name => {
-                    let args: #args_struct_ident = serde_json::from_str(args).map_err(|e| meerai_core::ToolError::WrongArguments(e))?;
-                    let result = self.#fn_ident(&args).await?;
+                    let result = self.#fn_ident().await?;
                     Ok(result)
                 }
             }

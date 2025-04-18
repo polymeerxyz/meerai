@@ -1,0 +1,55 @@
+---
+source: meerai-macros/src/tool/derive_schema.rs
+expression: "crate::test_utils::pretty_macro_output(&output)"
+snapshot_kind: text
+---
+impl meerai_core::JsonSchema for Human {
+    fn json_schema() -> serde_json::Value {
+        use serde_json::{Map, Value};
+        let mut schema = Map::new();
+        schema.insert("type".to_string(), Value::String("object".to_string()));
+        let mut properties = Map::new();
+        properties
+            .insert(
+                stringify!(name).to_string(),
+                <String as meerai_core::JsonSchema>::json_schema(),
+            );
+        properties
+            .insert(
+                stringify!(age).to_string(),
+                <u32 as meerai_core::JsonSchema>::json_schema(),
+            );
+        properties
+            .insert(
+                stringify!(gender).to_string(),
+                <Option<String> as meerai_core::JsonSchema>::json_schema(),
+            );
+        properties
+            .insert(
+                stringify!(birth_date).to_string(),
+                <Option<String> as meerai_core::JsonSchema>::json_schema(),
+            );
+        properties
+            .insert(
+                stringify!(address).to_string(),
+                <Option<String> as meerai_core::JsonSchema>::json_schema(),
+            );
+        properties
+            .insert(
+                stringify!(phone_number).to_string(),
+                <Option<String> as meerai_core::JsonSchema>::json_schema(),
+            );
+        properties
+            .insert(
+                stringify!(email).to_string(),
+                <Option<String> as meerai_core::JsonSchema>::json_schema(),
+            );
+        properties
+            .insert(
+                stringify!(occupation).to_string(),
+                <Option<String> as meerai_core::JsonSchema>::json_schema(),
+            );
+        schema.insert("properties".to_string(), Value::Object(properties));
+        Value::Object(schema)
+    }
+}

@@ -1,13 +1,13 @@
 use meerai_core::{JsonSchema, Toolset, async_trait};
 
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, meerai_macros::Schema)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, JsonSchema)]
 pub struct GetWeatherArgs {
     pub location: String,
     pub unit: Option<String>,
     pub size: f64,
 }
 
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, meerai_macros::Schema)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, JsonSchema)]
 pub struct SetWeatherArgs {
     pub location: String,
     pub unit: Option<String>,

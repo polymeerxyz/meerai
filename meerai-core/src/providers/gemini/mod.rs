@@ -1,3 +1,3 @@
 mod client;
 
-pub use client::{GeminiBuilder, GeminiConfig, Options};
+pub use client::{Gemini, GeminiConfig, Options};

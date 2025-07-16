@@ -1,13 +1,12 @@
 use anyhow::{Context, Result};
 use async_openai::types::{ChatCompletionRequestMessage, CreateChatCompletionRequestArgs, Role};
-use derive_builder::Builder;
 use reqwest::header::HeaderMap;
 use secrecy::{ExposeSecret, SecretString};
 use serde::Deserialize;
 use std::sync::Arc;
 
 use crate::{
-    ToolCall,
+    ToolCall, async_trait,
     chat_completion::{
         ChatCompletion, ChatCompletionError, ChatCompletionRequest, ChatCompletionResponse,
         ChatMessage, message_to_openai,
@@ -92,17 +91,24 @@ impl Default for Options {
     }
 }
 
-#[derive(Debug, Builder)]
+#[derive(Debug, Clone)]
 pub struct OpenRouter {
-    #[builder(
-        default = "Arc::new(async_openai::Client::with_config(OpenRouterConfig::default()))"
-    )]
     pub client: Arc<async_openai::Client<OpenRouterConfig>>,
-    #[builder(default = "Options::default()")]
     pub default_options: Options,
 }
 
-#[async_trait::async_trait]
+impl Default for OpenRouter {
+    fn default() -> Self {
+        Self {
+            client: Arc::new(async_openai::Client::with_config(
+                OpenRouterConfig::default(),
+            )),
+            default_options: Options::default(),
+        }
+    }
+}
+
+#[async_trait]
 impl ChatCompletion for OpenRouter {
     async fn send(
         &self,

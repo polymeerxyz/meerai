@@ -1,3 +1,3 @@
 mod client;
 
-pub use client::{OpenRouterBuilder, OpenRouterConfig, Options};
+pub use client::{OpenRouter, OpenRouterConfig, Options};

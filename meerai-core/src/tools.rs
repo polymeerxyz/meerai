@@ -81,7 +81,7 @@ impl ToolDefinition {
 }
 
 #[async_trait]
-pub trait Toolset {
+pub trait Toolset: Send + Sync {
     fn name(&self) -> String;
 
     fn definition(&self) -> Vec<ToolDefinition>;

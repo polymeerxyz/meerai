@@ -11,13 +11,12 @@ path = "src/lib.rs"
 doctest = false
 
 [features]
-worker = []
+default = []
 
 [dependencies]
 anyhow = { workspace = true }
 async-openai = "0.28"
 async-trait = { workspace = true }
-derive_builder = { workspace = true }
 futures = "0.3"
 reqwest = { version = "0.12", default-features = false, features = [
   "json",

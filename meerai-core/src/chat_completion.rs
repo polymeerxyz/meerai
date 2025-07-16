@@ -9,7 +9,7 @@ use async_openai::types::{
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use crate::{ToolCall, ToolDefinition};
+use crate::{ToolCall, ToolDefinition, async_trait};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum ChatMessage {
@@ -44,8 +44,8 @@ pub enum ChatCompletionError {
     Unknown(#[from] anyhow::Error),
 }
 
-#[async_trait::async_trait]
-pub trait ChatCompletion {
+#[async_trait]
+pub trait ChatCompletion: Send + Sync {
     async fn send(
         &self,
         request: &ChatCompletionRequest,
